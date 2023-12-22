@@ -116,7 +116,7 @@ export default function Main(){
                 </div>
             </div>
             <div className="top-bottom">
-                <h2>Developed by <a target='_blank' href='https://steamcommunity.com/id/bodebee'>Bodde</a></h2>  
+                <h2>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodebee'>Bodde</a></h2>  
                 <h3>Version 0.1.0</h3>               
             </div>
         </div>
