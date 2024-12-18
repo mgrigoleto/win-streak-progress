@@ -28,11 +28,21 @@
     background-color: black;
 }
 
+.portrait-frame{
+    width: 175px;
+    height: 175px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
 .img-style{
     border-radius: 10px;
-    width: 170px;
-    height: auto;
     transition: 0.25s;
+    zoom: 0.48;
+    object-fit: cover;
 }
 
 div#grade-imagens{
@@ -203,7 +213,8 @@ div#msg{
 }
 
 .card{
-    background-color: black;
+    background: rgb(0,0,0);
+    background: linear-gradient(135deg, rgba(0,0,0,1) 0%, rgba(1,5,37,1) 50%, rgba(0,0,0,1) 100%);
     margin: 12px;
     border-radius: 10px;
     transition: 0.25s;
@@ -231,4 +242,25 @@ a{
 
 a:hover{
     color: rgb(16, 255, 16);
+}
+
+
+.golden-card b{
+    color: rgb(255, 215, 0) !important;
+}
+
+.golden-card button{
+    color: black !important;
+    background-color: rgb(255, 215, 0) !important; 
+    border-color: rgb(255, 215, 0) !important;
+}
+
+.golden-card button:hover{
+    color: rgb(255, 215, 0) !important;
+    background-color: black !important;
+}
+
+.golden-card input{
+    color: rgb(255, 215, 0) !important; 
+    border-color: rgb(255, 215, 0) !important;
 }

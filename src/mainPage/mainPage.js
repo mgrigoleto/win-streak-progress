@@ -15,13 +15,9 @@ export default function Builder(){
     const [arrayWins, setArrayWins] = useState([])
     const [arrayDraws, setArrayDraws] = useState([])
     const [arrayBest, setArrayBest] = useState([])
-    const [arrayDraws, setArrayDraws] = useState([])
-    const [arrayBest, setArrayBest] = useState([])
     useEffect(() => {
         if(arrayImagens.length>0){
             setArrayWins(Array(arrayImagens.length).fill(0))
-            setArrayDraws(Array(arrayImagens.length).fill(0))
-            setArrayBest(Array(arrayImagens.length).fill(0))
             setArrayDraws(Array(arrayImagens.length).fill(0))
             setArrayBest(Array(arrayImagens.length).fill(0))
         }
@@ -222,9 +218,11 @@ export default function Builder(){
                 </div>
                 <div id='grade-imagens'>
                     {arrayImagens.map((image, index) => (
-                        <div className='card' style={{border: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '2px solid rgb(53, 181, 255)' : '2px solid rgb(0, 0, 144)', boxShadow: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '4px 4px rgb(53, 181, 255)' : '4px 4px rgb(0, 0, 144)'}} key={index}>
+                        <div className={arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? 'golden-card card' : 'card'} style={{border: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '2px solid rgb(255, 215, 0)' : '2px solid rgb(0, 0, 144)', boxShadow: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '4px 4px rgb(255, 215, 0)' : '4px 4px rgb(0, 0, 144)'}} key={index}>
                             <div className='bloco-imagem'>
-                                <img src={require('../img' + image + '.png')} alt={`Imagem ${index}`} className='img-style' title={(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2') == 'The Pig' ? "Mommy <3" : null} style={{border: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '2px solid rgb(53, 181, 255)' : '2px solid rgb(0, 0, 144)', boxShadow: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '1px 1px 10px 0 rgb(53, 181, 255), -1px -1px 10px 0 rgb(53, 181, 255)' : 'none'}}/>
+                                <div className='portrait-frame'>
+                                    <img src={require('../img' + image + '.png')} alt={`Imagem ${index}`} className='img-style' title={(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2') == 'The Pig' ? "Mommy <3" : null}/>
+                                </div>
                                 <b className='nome-killer'>{(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2')}</b>
                                 <div style={{display:'flex', alignItems:'center', justifyContent:'right', width:'170px'}}>
                                     <div style={{width:'100%', textAlign:'left'}}>
@@ -270,7 +268,7 @@ export default function Builder(){
                 </div>  
                 <div style={{display:'flex', flexDirection:'column', textAlign:'right'}}>
                     <b style={{margin:'0 0 10px 0'}}>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodd3'>Bodd3</a></b>  
-                    <b>Version 0.3.1</b>  
+                    <b>Version 0.4.0</b>  
                 </div>             
             </div>
         </div>
