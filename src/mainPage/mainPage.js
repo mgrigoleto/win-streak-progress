@@ -15,9 +15,13 @@ export default function Builder(){
     const [arrayWins, setArrayWins] = useState([])
     const [arrayDraws, setArrayDraws] = useState([])
     const [arrayBest, setArrayBest] = useState([])
+    const [arrayDraws, setArrayDraws] = useState([])
+    const [arrayBest, setArrayBest] = useState([])
     useEffect(() => {
         if(arrayImagens.length>0){
             setArrayWins(Array(arrayImagens.length).fill(0))
+            setArrayDraws(Array(arrayImagens.length).fill(0))
+            setArrayBest(Array(arrayImagens.length).fill(0))
             setArrayDraws(Array(arrayImagens.length).fill(0))
             setArrayBest(Array(arrayImagens.length).fill(0))
         }
