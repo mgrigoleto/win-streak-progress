@@ -224,11 +224,7 @@ export default function Builder(){
                 </div>  
                 <div style={{display:'flex', flexDirection:'column', textAlign:'right'}}>
                     <b style={{margin:'0 0 10px 0'}}>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodd3'>Bodd3</a></b>  
-<<<<<<< HEAD
-                    <b>Version 0.4.0</b>  
-=======
-                    <b>Version 0.4.1</b>  
->>>>>>> 8737350edb98c8eb15bf9033798df62962bb9044
+                    <b>Version 0.5.0</b>  
                 </div>             
             </div>
         </div>
