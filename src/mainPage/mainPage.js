@@ -13,12 +13,10 @@ export default function Builder(){
 
     // BUILD THE DATA ARRAY WITH THE IMAGE ARRAY LENGTH
     const [arrayWins, setArrayWins] = useState([])
-    const [arrayDraws, setArrayDraws] = useState([])
     const [arrayBest, setArrayBest] = useState([])
     useEffect(() => {
         if(arrayImagens.length>0){
             setArrayWins(Array(arrayImagens.length).fill(0))
-            setArrayDraws(Array(arrayImagens.length).fill(0))
             setArrayBest(Array(arrayImagens.length).fill(0))
         }
     },[arrayImagens])
@@ -41,25 +39,6 @@ export default function Builder(){
             }
         }
     },[arrayWins])
-
-    // BUILD THE DRAW SAVE ON LOCAL STORAGE
-    const [loadedDrawData, setLoadedDrawData] = useState(false)
-    useEffect(() => {
-        if(arrayWins.length>0 && loadedDrawData == false){
-            if(!localStorage.getItem('Player draws')){
-                localStorage.setItem('Player draws', JSON.stringify(arrayDraws))
-            }else{
-                setLoadedDrawData(true)
-                let tempArray = JSON.parse(localStorage.getItem('Player draws'))
-                if(tempArray.length < arrayImagens.length){
-                    for(let i=0;i<(arrayImagens.length - tempArray.length);i++){
-                        tempArray.push(0)
-                    }
-                }
-                setArrayDraws(tempArray)
-            }
-        }
-    },[arrayDraws])
 
     // BUILD THE PLAYER BEST SAVE ON LOCAL STORAGE
     const [loadedPlayerBest, setLoadedPlayerBest] = useState(false)
@@ -87,39 +66,26 @@ export default function Builder(){
                 document.getElementById("wins-amount"+i).value = arrayWins[i] ? arrayWins[i] : 0
             }
         }
-
-        if(arrayDraws.length>0 ){
-            for(let i=0; i<arrayDraws.length; i++){
-                document.getElementById("draws-amount"+i).value = arrayDraws[i] ? arrayDraws[i] : 0
-            }
-        }
-    },[arrayWins, arrayDraws])
+    },[arrayWins])
 
     // CHANGE THE DATA
     function saveStreakChange(n, index, action, type){
-        let updatedArray = type == 'win' ? [...arrayWins] : [...arrayDraws]
+        let updatedArray = [...arrayWins]
         let playerBestArray = [...arrayBest]
         if(action == 'add'){
             updatedArray[index] += n
-            if(type == 'win'){
-                playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
-            }
+            playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
+
         }else if(action == 'del' && updatedArray[index] > 0){
             updatedArray[index] += n
+
         }else if(n > 0 || !n){
             updatedArray[index] = n ? n : 0
-            if(type == 'win'){
-                playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
-            }
-        }
+            playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
 
-        if(type == 'win'){
-            setArrayWins(updatedArray)
-            localStorage.setItem('Player data', JSON.stringify(updatedArray))
-        }else{
-            setArrayDraws(updatedArray)
-            localStorage.setItem('Player draws', JSON.stringify(updatedArray))
         }
+        setArrayWins(updatedArray)
+        localStorage.setItem('Player data', JSON.stringify(updatedArray))
         setArrayBest(playerBestArray)
         localStorage.setItem('Player best', JSON.stringify(playerBestArray))
     }
@@ -128,24 +94,21 @@ export default function Builder(){
     const [messageColor, setMessageColor] = useState('white')
     function saveOnClipBoard(){
         let data = [...arrayWins]
-        let draws = [...arrayDraws]
         let best = [...arrayBest]
         setMessageColor('blue')
         setMessage('Progress saved on clipboard!')
         setTimeout(() => {
             setMessage('')
         }, 3000)
-        let loadedData = data + ';' + draws + ';' + best
+        let loadedData = data + ';' + best
         document.getElementById('save-data').value = loadedData
         localStorage.setItem('Player data', JSON.stringify(arrayWins))
-        localStorage.setItem('Player draws', JSON.stringify(arrayDraws))
         localStorage.setItem('Player best', JSON.stringify(arrayBest))
         navigator.clipboard.writeText(loadedData)
     }
 
     function resetAll(){
         setArrayWins(Array(arrayImagens.length).fill(0))
-        setArrayDraws(Array(arrayImagens.length).fill(0))
         setArrayBest(Array(arrayImagens.length).fill(0))
         setMessageColor('rgb(102, 0, 46)')
         setMessage('Progress erased!')
@@ -154,8 +117,14 @@ export default function Builder(){
         }, 3000)
         document.getElementById('save-data').value = ''
         localStorage.setItem('Player data', JSON.stringify(Array(arrayImagens.length).fill(0)))
-        localStorage.setItem('Player draws', JSON.stringify(Array(arrayImagens.length).fill(0)))
         localStorage.setItem('Player best', JSON.stringify(Array(arrayImagens.length).fill(0)))
+    }
+
+    function resetStreak(i){
+        let temp = [...arrayWins]
+        temp[i] = 0
+        setArrayWins(temp)
+        localStorage.setItem('Player data', JSON.stringify(temp))
     }
 
     function loadSave(){
@@ -163,12 +132,10 @@ export default function Builder(){
         if(value && value.includes(';')){
             let data = value.split(";")
             let arrayDataWins = data[0].split(',').map(Number)
-            let arrayDataDraws = data[1].split(',').map(Number)
             let arrayDataBest = data[2].split(',').map(Number)
 
-            if(arrayDataWins.length == arrayImagens.length && arrayImagens.length == arrayDataDraws.length && arrayImagens.length == arrayDataBest.length){
+            if(arrayDataWins.length == arrayImagens.length && arrayImagens.length == arrayDataBest.length){
                 setArrayWins(arrayDataWins)
-                setArrayDraws(arrayDataDraws)
                 setArrayBest(arrayDataBest)
                 setMessageColor('rgb(0, 191, 255)')
                 setMessage('Progress loaded!')
@@ -176,7 +143,6 @@ export default function Builder(){
                     setMessage('')
                 }, 3000)
                 localStorage.setItem('Player data', JSON.stringify(arrayDataWins))
-                localStorage.setItem('Player draws', JSON.stringify(arrayDataDraws))
                 localStorage.setItem('Player best', JSON.stringify(arrayDataBest))
             }else{
                 setMessageColor('red')
@@ -239,17 +205,7 @@ export default function Builder(){
                                 </div>
 
                                 <div style={{display:'flex', alignItems:'center', justifyContent:'right', width:'170px'}}>
-                                    <div style={{width:'100%', textAlign:'left'}}>
-                                        <b className='qtd-draws' title='Draws'>D</b>
-                                    </div>
-                                    
-                                    <input min="0" id={"draws-amount"+index} className='input-draw input-killer' onChange={(e) => {saveStreakChange(parseInt(e.target.value), index, null, 'draw')}}></input>
-
-                                    <div className='btn-line'>
-                                        <button className='btn-remover btn-imagem' onClick={() => {saveStreakChange(-1, index, 'del', 'draw')}}  title='Decrease one'><i className="fa-solid fa-minus"></i></button>
-                                        <button className='btn-add btn-imagem' onClick={() => {saveStreakChange(1, index, 'add', 'draw')}} title='Increase one'><i className="fa-solid fa-plus"></i></button>
-                                    </div>
-                                    
+                                    <button className='reset-button btn-imagem' onClick={() => {resetStreak(index)}}>RESET</button>                                    
                                 </div>
 
                                 <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'170px'}}>
