@@ -59,67 +59,6 @@ export default function Builder(){
         }
     },[arrayBest])
 
-    // SET THE DATA ON THE INPUTS
-    useEffect(() => {
-        if(arrayWins.length>0 ){
-            for(let i=0; i<arrayWins.length; i++){
-                document.getElementById("wins-amount"+i).value = arrayWins[i] ? arrayWins[i] : 0
-            }
-        }
-    },[arrayWins])
-
-    // CHANGE THE DATA
-    function saveStreakChange(n, index, action, type){
-        let updatedArray = [...arrayWins]
-        let playerBestArray = [...arrayBest]
-        if(action == 'add'){
-            updatedArray[index] += n
-            playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
-
-        }else if(action == 'del' && updatedArray[index] > 0){
-            updatedArray[index] += n
-
-        }else if(n > 0 || !n){
-            updatedArray[index] = n ? n : 0
-            playerBestArray[index] = updatedArray[index] > playerBestArray[index] ? updatedArray[index] : playerBestArray[index]
-
-        }
-        setArrayWins(updatedArray)
-        localStorage.setItem('Player data', JSON.stringify(updatedArray))
-        setArrayBest(playerBestArray)
-        localStorage.setItem('Player best', JSON.stringify(playerBestArray))
-    }
-
-    const [message, setMessage] = useState()
-    const [messageColor, setMessageColor] = useState('white')
-    function saveOnClipBoard(){
-        let data = [...arrayWins]
-        let best = [...arrayBest]
-        setMessageColor('blue')
-        setMessage('Progress saved on clipboard!')
-        setTimeout(() => {
-            setMessage('')
-        }, 3000)
-        let loadedData = data + ';' + best
-        document.getElementById('save-data').value = loadedData
-        localStorage.setItem('Player data', JSON.stringify(arrayWins))
-        localStorage.setItem('Player best', JSON.stringify(arrayBest))
-        navigator.clipboard.writeText(loadedData)
-    }
-
-    function resetAll(){
-        setArrayWins(Array(arrayImagens.length).fill(0))
-        setArrayBest(Array(arrayImagens.length).fill(0))
-        setMessageColor('rgb(102, 0, 46)')
-        setMessage('Progress erased!')
-        setTimeout(() => {
-            setMessage('')
-        }, 3000)
-        document.getElementById('save-data').value = ''
-        localStorage.setItem('Player data', JSON.stringify(Array(arrayImagens.length).fill(0)))
-        localStorage.setItem('Player best', JSON.stringify(Array(arrayImagens.length).fill(0)))
-    }
-
     function resetStreak(i){
         let temp = [...arrayWins]
         temp[i] = 0
@@ -127,91 +66,49 @@ export default function Builder(){
         localStorage.setItem('Player data', JSON.stringify(temp))
     }
 
-    function loadSave(){
-        let value = document.getElementById('save-data').value
-        if(value && value.includes(';')){
-            let data = value.split(";")
-            let arrayDataWins = data[0].split(',').map(Number)
-            let arrayDataBest = data[2].split(',').map(Number)
+    function saveStreakChange(value, i, manualInput){
+        let winsTemp = [...arrayWins]
+        if(manualInput && value > 0){
+            winsTemp[i] = value
+        } else {
+            winsTemp[i] = winsTemp[i] + value > 0 ? winsTemp[i] += value : 0
+        }
+        setArrayWins(winsTemp)
+        localStorage.setItem('Player data', JSON.stringify(winsTemp))
 
-            if(arrayDataWins.length == arrayImagens.length && arrayImagens.length == arrayDataBest.length){
-                setArrayWins(arrayDataWins)
-                setArrayBest(arrayDataBest)
-                setMessageColor('rgb(0, 191, 255)')
-                setMessage('Progress loaded!')
-                setTimeout(() => {
-                    setMessage('')
-                }, 3000)
-                localStorage.setItem('Player data', JSON.stringify(arrayDataWins))
-                localStorage.setItem('Player best', JSON.stringify(arrayDataBest))
-            }else{
-                setMessageColor('red')
-                setMessage('Invalid format.')
-                setTimeout(() => {
-                    setMessage('')
-                }, 3000)
-            }
-        }else{
-            setMessageColor('red')
-            setMessage('Invalid format.')
-            setTimeout(() => {
-                setMessage('')
-            }, 3000)
+        if(winsTemp[i] > arrayBest[i]){
+            let bestTemp = [...arrayBest]
+            bestTemp[i] = winsTemp[i]
+            setArrayBest(bestTemp)
+            localStorage.setItem('Player best', JSON.stringify(bestTemp))
         }
     }
-    
+   
 
     return (
         <>
         <div className="entire-block">
-            <div className="top-bottom">
+            <div className="top-bottom top">
                 <h1>Dead by Daylight Streak Counter</h1>
             </div>
             <div className="main">
-                <div className='save-block'>
-                    {/* <div id='info-text'>
-                        <p>Your progress is saved automatically in your browser. But if you want to bring it somewhere else, you can do it by saving into your clipboard.</p>
-                    </div> */}
-                    <input type='text' id='save-data' placeholder=''></input>
-                    <div className='btn-line btn-line-input' style={{margin:'15px 0 0 0'}}>
-                        <button onClick={resetAll} className='reset-data btn-imagem'>RESET</button>
-                        <button onClick={loadSave} className='load-inputed-data btn-imagem'>LOAD</button>
-                        <button onClick={saveOnClipBoard} className='save-loaded-data btn-imagem'>SAVE</button>
-                    </div>
-                    <div id='msg' style={{color:messageColor}}>
-                        {message}
-                    </div>
-                </div>
                 <div id='grade-imagens'>
                     {arrayImagens.map((image, index) => (
-                        <div className={arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? 'golden-card card' : 'card'} style={{border: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '2px solid rgb(255, 215, 0)' : '2px solid rgb(0, 0, 144)', boxShadow: arrayWins[index] >= arrayBest[index] && arrayBest[index] > 0 ? '4px 4px rgb(255, 215, 0)' : '4px 4px rgb(0, 0, 144)'}} key={index}>
+                        <div className={arrayBest[index] >= 50 ? 'golden-card card' : 'card'} key={index}>
                             <div className='bloco-imagem'>
+                                <b id='nome-killer'>{(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2')}</b>
                                 <div className='portrait-frame'>
                                     <img src={require('../img' + image + '.png')} alt={`Imagem ${index}`} className='img-style' title={(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2') == 'The Pig' ? "Mommy <3" : null}/>
                                 </div>
-                                <b className='nome-killer'>{(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2')}</b>
-                                <div style={{display:'flex', alignItems:'center', justifyContent:'right', width:'170px'}}>
-                                    <div style={{width:'100%', textAlign:'left'}}>
-                                        <b className='qtd-wins' title='Wins'>W</b>
-                                    </div>
-                                    
-                                    <input min="0" id={"wins-amount"+index} className='input-killer' onChange={(e) => {saveStreakChange(parseInt(e.target.value), index, null, 'win')}}></input>
-
-                                    <div className='btn-line'>
-                                        <button className='btn-remover btn-imagem' onClick={() => {saveStreakChange(-1, index, 'del', 'win')}}  title='Decrease one'><i className="fa-solid fa-minus"></i></button>
-                                        <button className='btn-add btn-imagem' onClick={() => {saveStreakChange(1, index, 'add', 'win')}} title='Increase one'><i className="fa-solid fa-plus"></i></button>
-                                    </div>
-                                    
+                                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'170px', fontSize:'17px', margin:'0 0 10px 0'}}>
+                                    <b className='qtd-wins' title='Wins'>Current: {arrayWins ? arrayWins[index] : 0}</b>
+                                    <b style={{color: arrayBest && arrayBest[index] >= 50 ? "yellow" : "inherit"}} className='player-best-text'>Best: {arrayBest ? arrayBest[index] : 0}</b>                                    
                                 </div>
-
-                                <div style={{display:'flex', alignItems:'center', justifyContent:'right', width:'170px'}}>
-                                    <button className='reset-button btn-imagem' onClick={() => {resetStreak(index)}}>RESET</button>                                    
-                                </div>
-
-                                <div style={{display:'flex', alignItems:'center', justifyContent:'center', width:'170px'}}>
-                                    <b className='player-best-text'>Player best: {arrayBest ? arrayBest[index] : 0}</b>
-                                    
-                                </div>
+                                <div className='btn-line'>
+                                    <button className='btn-imagem' onClick={() => {saveStreakChange(-1, index, false)}}  title='Decrease one'><i className="fa-solid fa-minus"></i></button>
+                                    <button className='btn-imagem' onClick={() => {saveStreakChange(1, index, false)}} title='Increase one'><i className="fa-solid fa-plus"></i></button>
+                                    <button className='btn-reset btn-imagem' onClick={() => {resetStreak(index)}} title='Reset'><i className="fa-solid fa-rotate"></i></button>
+                                </div> 
                             </div>
                         </div>
                     ))}
@@ -219,13 +116,9 @@ export default function Builder(){
                 </div>
             </div>
             <div className="top-bottom bottom">
-                <div style={{textAlign:'left'}}>
-                    <b>This website isn't affiliated with Behaviour Interactive or Dead by Daylight.</b>  
-                </div>  
-                <div style={{display:'flex', flexDirection:'column', textAlign:'right'}}>
-                    <b style={{margin:'0 0 10px 0'}}>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodd3'>Bodd3</a></b>  
-                    <b>Version 0.5.0</b>  
-                </div>             
+                <b>This website isn't affiliated with Behaviour Interactive or Dead by Daylight.</b> 
+                <b style={{margin:'10px 0'}}>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodd3'>Bodd3</a></b>  
+                <b>Version 0.6.0</b>             
             </div>
         </div>
         </>
