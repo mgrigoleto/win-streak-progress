@@ -21,7 +21,7 @@
     max-width: 100%;
     padding: 75px;
     background-image: url(./bg.jpg);
-    background-size:contain;
+    background-size: contain;
     background-attachment: fixed;
     box-shadow: 
     inset 0 75px 50px black,
@@ -42,7 +42,7 @@
 
 .portrait-frame{
     width: 175px;
-    height: 225px;
+    height: 200px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -55,7 +55,6 @@
     border-radius: 5px;
     transition: 0.25s;
     zoom: 0.48;
-    object-fit: cover;
 }
 
 div#grade-imagens{
@@ -90,6 +89,14 @@ div#grade-imagens{
     background-color: rgb(0, 32, 190);
 }
 
+.btn-clear{
+    background-color: rgb(255, 0, 221);
+}
+
+.btn-clear:hover{
+    background-color: rgb(189, 0, 164);
+}
+
 .btn-reset{
     background-color: rgb(255, 0, 0);
 }
@@ -102,7 +109,7 @@ div#grade-imagens{
     background: linear-gradient(
         90deg,
         rgb(0, 0, 0) 0%,
-        rgb(21, 0, 0) 50%,
+        rgb(63, 0, 0) 50%,
         rgb(0, 0, 0) 80%
     );
     background-size: 200% 100%;
@@ -113,10 +120,23 @@ div#grade-imagens{
     color: white;
     box-shadow: 10px 10px 15px black;
 }
- .top{
+
+.win-card{
+    background: linear-gradient(
+        90deg,
+        rgb(0, 0, 0) 0%,
+        rgb(0, 0, 53) 50%,
+        rgb(0, 0, 0) 80%
+    );
+    background-size: 200% 100%;
+    animation: reflexoLuz 3s linear infinite;
+}
+
+
+.top{
     padding: 50px 0 0 0;
     height: 5vh;
- }
+}
 
 .bottom{
     display: flex;

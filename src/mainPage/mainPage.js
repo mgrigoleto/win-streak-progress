@@ -66,6 +66,13 @@ export default function Builder(){
         localStorage.setItem('Player data', JSON.stringify(temp))
     }
 
+    function resetBest(i){
+        let temp = [...arrayBest]
+        temp[i] = 0
+        setArrayBest(temp)
+        localStorage.setItem('Player best', JSON.stringify(temp))
+    }
+
     function saveStreakChange(value, i, manualInput){
         let winsTemp = [...arrayWins]
         if(manualInput && value > 0){
@@ -94,20 +101,21 @@ export default function Builder(){
             <div className="main">
                 <div id='grade-imagens'>
                     {arrayImagens.map((image, index) => (
-                        <div className={arrayBest[index] >= 50 ? 'golden-card card' : 'card'} key={index}>
+                        <div className={arrayBest[index] >= 50 ? 'win-card card' : 'card'} key={index}>
                             <div className='bloco-imagem'>
-                                <b id='nome-killer'>{(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2')}</b>
+                                <b style={{color: arrayBest && arrayBest[index] >= 50 ? "yellow" : "inherit"}}  id='nome-killer'>{(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2')}</b>
                                 <div className='portrait-frame'>
                                     <img src={require('../img' + image + '.png')} alt={`Imagem ${index}`} className='img-style' title={(image.slice(5).slice(0, -9)).replace(/([a-z])([A-Z])/g, '$1 $2') == 'The Pig' ? "Mommy <3" : null}/>
                                 </div>
                                 <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', width:'170px', fontSize:'17px', margin:'0 0 10px 0'}}>
                                     <b className='qtd-wins' title='Wins'>Current: {arrayWins ? arrayWins[index] : 0}</b>
-                                    <b style={{color: arrayBest && arrayBest[index] >= 50 ? "yellow" : "inherit"}} className='player-best-text'>Best: {arrayBest ? arrayBest[index] : 0}</b>                                    
+                                    <b className='player-best-text'>Best: {arrayBest ? arrayBest[index] : 0}</b>                                    
                                 </div>
                                 <div className='btn-line'>
                                     <button className='btn-imagem' onClick={() => {saveStreakChange(-1, index, false)}}  title='Decrease one'><i className="fa-solid fa-minus"></i></button>
                                     <button className='btn-imagem' onClick={() => {saveStreakChange(1, index, false)}} title='Increase one'><i className="fa-solid fa-plus"></i></button>
-                                    <button className='btn-reset btn-imagem' onClick={() => {resetStreak(index)}} title='Reset'><i className="fa-solid fa-rotate"></i></button>
+                                    <button className='btn-clear btn-imagem' onClick={() => {resetStreak(index)}} title='Reset streak'><i className="fa-solid fa-rotate"></i></button>
+                                    <button className='btn-reset btn-imagem' onClick={() => {resetBest(index)}} title='Delete data'><i className="fa-solid fa-trash"></i></button>
                                 </div> 
                             </div>
                         </div>
@@ -116,9 +124,9 @@ export default function Builder(){
                 </div>
             </div>
             <div className="top-bottom bottom">
-                <b>This website isn't affiliated with Behaviour Interactive or Dead by Daylight.</b> 
+                <b>Your progress is stored in the browser cache. This website isn't affiliated with Behaviour Interactive or Dead by Daylight.</b> 
                 <b style={{margin:'10px 0'}}>Developed by <a target='_blank' rel='noreferrer' href='https://steamcommunity.com/id/bodd3'>Bodd3</a></b>  
-                <b>Version 0.6.0</b>             
+                <b>Version 0.6.1</b>             
             </div>
         </div>
         </>
